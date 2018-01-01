@@ -18,12 +18,10 @@ class EZSparseVector:
                 del self.__vals[key]
         else:
             self.__vals[key] = value
-
+# assuming that the other is the smaller one.
     def dot(self, other):
-        a,b = set(self.__vals.keys()), set(other.__vals.keys())
-        poss = a.intersection(b)
         sum = 0
-        for pos in poss:
+        for pos in other.__vals.keys():
             sum += self[pos] * other[pos]
         return sum
 
@@ -32,7 +30,28 @@ class EZSparseVector:
             self[pos] -= value
         return self
 
+    def __add__(self, other):
+        for pos, value in other.__vals.items():
+            self[pos] += value
+        return self
+
+    def __truediv__(self, other):
+        if(type(other) in [float, int]):
+            for pos in self.__vals:
+                self[pos] /= other
+            return self
+        else:
+            raise Exception("Unsupported operation")
+
+    def __mul__(self, other):
+        for pos in self.__vals:
+            self[pos] *= other
+        return self
     def __str__(self):
         return str(self.__vals.items())
 
+    def copy(self):
+        return EZSparseVector(list(self.__vals.values()), list(self.__vals.keys()))
 
+    def items(self):
+        return self.__vals.items()
