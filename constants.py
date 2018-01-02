@@ -3,3 +3,5 @@ ADDRESS = 'address'
 WORD = 'word'
 TAG = 'tag'
 ITERATIONS = 2
+IDXFEATURESIZE = 0
+AUGMENTED = True

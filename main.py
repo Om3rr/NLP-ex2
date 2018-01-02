@@ -7,9 +7,6 @@ import numpy as np
 import networkx as nx
 from helper import EZSparseVector
 
-IDXFEATURESIZE = 0
-AUGMENTED = True
-
 def add_to_dict(key, value, d):
     if(key not in d):
         d[key] = {}
@@ -88,8 +85,8 @@ def buildGraph(sentence, theta, strToIdx):
                 continue
             word2, pos2 = G.node[j]['word'], G.node[j]['tag']
             hotVector = twoHotVector(word1, word2, pos1, pos2, strToIdx)
-            # if abs(i-j) < 5: # AUGMENTED
-            #     hotVector += EZSparseVector([1], [diffToFeature(abs(i - j))])
+            if abs(i-j) < 5 and AUGMENTED: # AUGMENTED
+                hotVector += EZSparseVector([1], [diffToFeature(abs(i - j))])
             weight = theta.dot(hotVector)
             G.add_edge(i,j,weight=-weight) # the algorithm is the minimal..
     return G
@@ -158,8 +155,6 @@ def getW(diffs, N):
     summedTheta = EZSparseVector([],[])
     # I prefer to calculate the diffs because it will be much faster than sum everything up...
     for i,diff in enumerate(diffs):
-        c = len(diffs) - i
-        diff*=c
         summedTheta += diff
     summedTheta /= N
     return summedTheta
